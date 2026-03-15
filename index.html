@@ -12,9 +12,12 @@
         body {
             font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
+            /* Запрет выделения текста для дополнительной защиты */
+            user-select: none; 
         }
         pre, code {
             font-family: 'Fira Code', monospace;
+            user-select: text; /* Разрешаем выделять только сам код */
         }
         .gradient-text {
             background: linear-gradient(90deg, #3b82f6, #10b981);
@@ -44,14 +47,12 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-900">
+<body class="bg-gray-50 text-gray-900" oncontextmenu="return false;">
 
     <div id="copy-notification">Код скопирован в буфер обмена!</div>
 
-    <!-- Navigation -->
     <div class="flex flex-col md:flex-row min-h-screen">
         
-        <!-- Sidebar -->
         <aside class="w-full md:w-64 bg-white border-r border-gray-200 p-6 flex-shrink-0">
             <div class="mb-8">
                 <h1 class="text-2xl font-bold gradient-text italic">JMCWorld</h1>
@@ -67,10 +68,8 @@
             </nav>
         </aside>
 
-        <!-- Main Content -->
         <main class="flex-1 p-6 md:p-12 max-w-4xl mx-auto">
             
-            <!-- Intro Section -->
             <section id="intro" class="mb-16">
                 <h2 class="text-4xl font-extrabold mb-2">Документация по сборке <span class="text-blue-600">.jmcworld</span></h2>
                 <p class="text-lg font-bold text-gray-500 mb-6 uppercase tracking-wider">Java Minecraft World</p>
@@ -91,7 +90,6 @@
                 </div>
             </section>
 
-            <!-- Structure Section -->
             <section id="structure" class="mb-16">
                 <h3 class="text-2xl font-bold mb-4 border-b pb-2">1. Структура папок перед сборкой</h3>
                 <p class="mb-4 text-gray-700">Для успешной сборки создайте рабочую директорию со следующим содержимым:</p>
@@ -114,7 +112,6 @@
                 <p class="text-sm text-red-500 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i> Важно: Если файл <code>install.json</code> будет находиться внутри вложенных папок, сборщик выдаст ошибку.</p>
             </section>
 
-            <!-- JSON Config Section -->
             <section id="install-json" class="mb-16">
                 <h3 class="text-2xl font-bold mb-4 border-b pb-2">2. Конфигурация install.json</h3>
                 <p class="mb-4 text-gray-700">Файл конфигурации определяет правила переноса данных в папку <code>.minecraft</code>.</p>
@@ -124,7 +121,6 @@
                         <span class="text-xs font-semibold uppercase text-gray-500 tracking-wider">Пример кода</span>
                         <i class="fas fa-copy cursor-pointer text-gray-400 hover:text-blue-500" onclick="copyCode()"></i>
                     </div>
-                    <!-- Hidden textarea for copying -->
                     <textarea id="code-to-copy" class="absolute -top-[9999px]">
 {
   "name": "Super Adventure Map",
@@ -165,7 +161,6 @@
                 </div>
             </section>
 
-            <!-- Actions Table -->
             <section id="actions" class="mb-16">
                 <h3 class="text-2xl font-bold mb-4 border-b pb-2">3. Описание полей</h3>
                 <div class="overflow-x-auto">
@@ -202,7 +197,6 @@
                 </div>
             </section>
 
-            <!-- Build Process -->
             <section id="build" class="mb-16">
                 <h3 class="text-2xl font-bold mb-4 border-b pb-2">4. Процесс сборки</h3>
                 <div class="space-y-6">
@@ -230,7 +224,6 @@
                 </div>
             </section>
 
-            <!-- Uninstall logic -->
             <section id="uninstall" class="mb-16 bg-gray-100 p-8 rounded-2xl border-dashed border-2 border-gray-300">
                 <h3 class="text-2xl font-bold mb-4 flex items-center">
                     <i class="fas fa-trash-alt mr-3 text-red-500"></i> Механизм удаления
@@ -247,10 +240,39 @@
     </div>
 
     <script>
+        // --- ЗАЩИТА ОТ DEVTOOLS ---
+
+        // Блокировка F12, Ctrl+Shift+I, Ctrl+U и других
+        document.onkeydown = function(e) {
+            if (e.keyCode == 123 || 
+                (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74 || e.keyCode == 67)) || 
+                (e.ctrlKey && e.keyCode == 85)) {
+                return false;
+            }
+        };
+
+        // Трюк с бесконечным дебаггером (активируется при открытии консоли)
+        (function() {
+            var counter = 0;
+            setInterval(function() {
+                (function(a) {
+                    return (function(a) {
+                        return (function(a) {
+                            (function() {
+                                debugger;
+                            }).apply(a);
+                        })(a);
+                    })(a);
+                })(window);
+            }, 500);
+        })();
+
+        // --- ОРИГИНАЛЬНЫЕ ФУНКЦИИ ---
+
         function copyCode() {
             const textArea = document.getElementById("code-to-copy");
             textArea.select();
-            textArea.setSelectionRange(0, 99999); // Для мобильных устройств
+            textArea.setSelectionRange(0, 99999); 
 
             try {
                 const successful = document.execCommand('copy');
@@ -261,7 +283,6 @@
                 console.error('Ошибка при копировании:', err);
             }
             
-            // Снимаем выделение
             window.getSelection().removeAllRanges();
         }
 
