@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Документация формата .jmcworld (Java Minecraft World)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        pre, code {
+            font-family: 'Fira Code', monospace;
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .sidebar-link:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-left: 4px solid #3b82f6;
+        }
+        #copy-notification {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 100;
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900">
+
+    <div id="copy-notification">Код скопирован в буфер обмена!</div>
+
+    <!-- Navigation -->
+    <div class="flex flex-col md:flex-row min-h-screen">
+        
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 bg-white border-r border-gray-200 p-6 flex-shrink-0">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold gradient-text italic">JMCWorld</h1>
+                <p class="text-xs text-gray-500 text-blue-600 font-semibold uppercase tracking-tighter">Java Minecraft World</p>
+            </div>
+            <nav class="space-y-2">
+                <a href="#intro" class="sidebar-link block p-2 rounded transition font-medium">Введение</a>
+                <a href="#structure" class="sidebar-link block p-2 rounded transition">Структура проекта</a>
+                <a href="#install-json" class="sidebar-link block p-2 rounded transition">Конфигурация JSON</a>
+                <a href="#actions" class="sidebar-link block p-2 rounded transition">Действия (Actions)</a>
+                <a href="#build" class="sidebar-link block p-2 rounded transition">Процесс сборки</a>
+                <a href="#uninstall" class="sidebar-link block p-2 rounded transition">Как работает удаление</a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 md:p-12 max-w-4xl mx-auto">
+            
+            <!-- Intro Section -->
+            <section id="intro" class="mb-16">
+                <h2 class="text-4xl font-extrabold mb-2">Документация по сборке <span class="text-blue-600">.jmcworld</span></h2>
+                <p class="text-lg font-bold text-gray-500 mb-6 uppercase tracking-wider">Java Minecraft World</p>
+                <p class="text-lg text-gray-600 mb-6">
+                    Формат <strong>.jmcworld</strong> (аббревиатура от <strong>Java Minecraft World</strong>) — это специализированный контейнер на базе ZIP-архива, созданный для упрощенного распространения контента. Он позволяет объединить мир, моды и настройки в один файл для автоматической установки.
+                </p>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-info-circle text-blue-500"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-blue-700">
+                                Основная цель формата — избавить игрока от ручного копирования файлов по папкам <code>saves</code>, <code>mods</code> и <code>resourcepacks</code>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Structure Section -->
+            <section id="structure" class="mb-16">
+                <h3 class="text-2xl font-bold mb-4 border-b pb-2">1. Структура папок перед сборкой</h3>
+                <p class="mb-4 text-gray-700">Для успешной сборки создайте рабочую директорию со следующим содержимым:</p>
+                <div class="bg-gray-900 text-gray-300 p-6 rounded-lg shadow-inner mb-6 border-2 border-blue-500">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <i class="fas fa-folder-open text-yellow-500"></i> <span>MyEpicProject/</span>
+                    </div>
+                    <div class="ml-6 space-y-1">
+                        <div class="flex items-center space-x-2 border-l-2 border-blue-500 ml-2 pl-4 mb-2">
+                            <i class="fas fa-file-code text-blue-400"></i> <span class="font-bold text-white">install.json</span> <span class="text-blue-300 italic">(Должен быть здесь, в корне!)</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-folder text-yellow-500"></i> <span>WorldData/</span> <span class="text-gray-500 italic">(Файлы самого мира)</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-folder text-yellow-500"></i> <span>Addons/</span> <span class="text-gray-500 italic">(Моды или шейдеры)</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="text-sm text-red-500 font-semibold"><i class="fas fa-exclamation-triangle mr-1"></i> Важно: Если файл <code>install.json</code> будет находиться внутри вложенных папок, сборщик выдаст ошибку.</p>
+            </section>
+
+            <!-- JSON Config Section -->
+            <section id="install-json" class="mb-16">
+                <h3 class="text-2xl font-bold mb-4 border-b pb-2">2. Конфигурация install.json</h3>
+                <p class="mb-4 text-gray-700">Файл конфигурации определяет правила переноса данных в папку <code>.minecraft</code>.</p>
+                
+                <div class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                    <div class="bg-gray-50 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
+                        <span class="text-xs font-semibold uppercase text-gray-500 tracking-wider">Пример кода</span>
+                        <i class="fas fa-copy cursor-pointer text-gray-400 hover:text-blue-500" onclick="copyCode()"></i>
+                    </div>
+                    <!-- Hidden textarea for copying -->
+                    <textarea id="code-to-copy" class="absolute -top-[9999px]">
+{
+  "name": "Super Adventure Map",
+  "version": "1.2.0",
+  "actions": [
+    {
+      "source": "WorldData",
+      "target": "saves/Super_Adventure"
+    },
+    {
+      "source": "Addons/mods",
+      "target": "mods"
+    },
+    {
+      "source": "Addons/res",
+      "target": "resourcepacks"
+    }
+  ]
+}</textarea>
+                    <pre class="p-4 text-sm leading-relaxed overflow-x-auto text-gray-800 bg-gray-50"><code>{
+  "name": "Super Adventure Map",
+  "version": "1.2.0",
+  "actions": [
+    {
+      "source": "WorldData",
+      "target": "saves/Super_Adventure"
+    },
+    {
+      "source": "Addons/mods",
+      "target": "mods"
+    },
+    {
+      "source": "Addons/res",
+      "target": "resourcepacks"
+    }
+  ]
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Actions Table -->
+            <section id="actions" class="mb-16">
+                <h3 class="text-2xl font-bold mb-4 border-b pb-2">3. Описание полей</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="py-3 px-4 border-b text-left text-xs font-bold uppercase text-gray-600">Поле</th>
+                                <th class="py-3 px-4 border-b text-left text-xs font-bold uppercase text-gray-600">Описание</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-gray-200">
+                            <tr>
+                                <td class="py-3 px-4 font-semibold">name</td>
+                                <td class="py-3 px-4 text-gray-600">Отображаемое имя проекта в списке установленных программ.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-semibold">version</td>
+                                <td class="py-3 px-4 text-gray-600">Версия сборки (строка).</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-semibold">actions</td>
+                                <td class="py-3 px-4 text-gray-600">Массив объектов, каждый из которых описывает операцию копирования.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-semibold italic ml-4">↳ source</td>
+                                <td class="py-3 px-4 text-gray-600">Путь к папке внутри архива.</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 px-4 font-semibold italic ml-4">↳ target</td>
+                                <td class="py-3 px-4 text-gray-600">Путь назначения внутри .minecraft (напр. "saves" или "mods").</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Build Process -->
+            <section id="build" class="mb-16">
+                <h3 class="text-2xl font-bold mb-4 border-b pb-2">4. Процесс сборки</h3>
+                <div class="space-y-6">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-4">1</div>
+                        <div>
+                            <h4 class="font-bold text-red-600">Подготовка файлов</h4>
+                            <p class="text-gray-600">Убедитесь, что <code>install.json</code> находится <strong>строго в корневой папке</strong> вашего проекта (рядом с папками ресурсов).</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-4">2</div>
+                        <div>
+                            <h4 class="font-bold">Использование приложения</h4>
+                            <p class="text-gray-600">Вкладка <strong>"Разработчик (Сборка)"</strong> в программе JMCWorld Installer.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center font-bold mr-4">3</div>
+                        <div>
+                            <h4 class="font-bold">Генерация Java Minecraft World</h4>
+                            <p class="text-gray-600 text-sm">Выберите папку с исходниками и укажите путь для сохранения. На выходе вы получите файл <code>.jmcworld</code>.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Uninstall logic -->
+            <section id="uninstall" class="mb-16 bg-gray-100 p-8 rounded-2xl border-dashed border-2 border-gray-300">
+                <h3 class="text-2xl font-bold mb-4 flex items-center">
+                    <i class="fas fa-trash-alt mr-3 text-red-500"></i> Механизм удаления
+                </h3>
+                <p class="text-gray-700 leading-relaxed italic">
+                    Установщик автоматически генерирует лог-файл <code>*_uninstall.json</code> в папке <code>.minecraft/jmcworld_data</code>. Это позволяет корректно удалять контент, не затрагивая файлы игрока.
+                </p>
+            </section>
+
+            <footer class="mt-20 pt-8 border-t border-gray-200 text-center text-gray-500 text-sm">
+                <p>© 2026 Java Minecraft World (JMCWorld) System.</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        function copyCode() {
+            const textArea = document.getElementById("code-to-copy");
+            textArea.select();
+            textArea.setSelectionRange(0, 99999); // Для мобильных устройств
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showNotification();
+                }
+            } catch (err) {
+                console.error('Ошибка при копировании:', err);
+            }
+            
+            // Снимаем выделение
+            window.getSelection().removeAllRanges();
+        }
+
+        function showNotification() {
+            const note = document.getElementById("copy-notification");
+            note.style.display = "block";
+            setTimeout(() => {
+                note.style.display = "none";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
