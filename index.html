@@ -3,7 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Документация формата .jmcworld (Java Minecraft World)</title>
+    <title>Документация формата .jmcworld (Java Minecraft World)</title><script>
+    // Блокировка горячих клавиш с алертом
+    document.addEventListener('keydown', function(e) {
+        const forbiddenKeys = [73, 74, 67, 85, 83]; // I, J, C, U, S
+        
+        if (
+            e.keyCode === 123 || // F12
+            (e.ctrlKey && e.shiftKey && forbiddenKeys.includes(e.keyCode)) || 
+            (e.ctrlKey && e.keyCode === 85) // Ctrl+U
+        ) {
+            e.preventDefault();
+            e.stopPropagation();
+            alert("Не удалось выполнить действие"); // Твой алерт
+            return false;
+        }
+    }, true);
+
+    // Блокировка правой кнопки мыши с тем же алертом
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+        alert("Не удалось выполнить действие");
+    });
+
+    // Тот самый бесконечный дебаггер (второй рубеж)
+    (function() {
+        const block = function() {
+            setInterval(function() {
+                debugger;
+            }, 50);
+        };
+        try { block(); } catch (err) {}
+    })();
+
+    // Чистка консоли (третий рубеж)
+    setInterval(function() {
+        console.clear();
+    }, 100);
+
+    // Твои оригинальные функции для кнопок на странице (копирование)
+    function copyCode() {
+        const textArea = document.getElementById("code-to-copy");
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            const note = document.getElementById("copy-notification");
+            note.style.display = "block";
+            setTimeout(() => { note.style.display = "none"; }, 2000);
+        } catch (err) {}
+        window.getSelection().removeAllRanges();
+    }
+</script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
